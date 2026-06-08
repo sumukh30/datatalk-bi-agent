@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataTalk — Ask Your Data</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+    *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    :root {
+        --bg: #07080f;
+        --bg-mid: #0d0f1c;
+        --card: rgba(16, 18, 35, 0.80);
+        --card-hover: rgba(20, 22, 42, 0.90);
+        --border: rgba(255, 255, 255, 0.07);
+        --border-hover: rgba(139, 92, 246, 0.30);
+        --text: #e2e8f0;
+        --muted: #7c8db5;
+        --faint: #3d4a66;
+        --primary: #8b5cf6;
+        --primary-hover: #7c3aed;
+        --primary-glow: rgba(139, 92, 246, 0.18);
+        --secondary: #60a5fa;
+        --success: #10b981;
+        --danger: #ef4444;
+        --radius-sm: 10px;
+        --radius-md: 16px;
+        --radius-lg: 22px;
+        --radius-xl: 28px;
+        --transition: 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        min-height: 100vh;
+        color: var(--text);
+        font-size: 15px;
+        line-height: 1.6;
+        background:
+            radial-gradient(ellipse 80% 50% at 10% -10%, rgba(124, 58, 237, 0.18), transparent),
+            radial-gradient(ellipse 60% 40% at 90% 5%, rgba(59, 130, 246, 0.12), transparent),
+            linear-gradient(160deg, #07080f 0%, #0d0f1c 50%, #0a0c18 100%);
+        background-attachment: fixed;
+    }
+
+    /* ─── HEADER ──────────────────────────────────────── */
+    header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        background: rgba(7, 8, 15, 0.75);
+        border-bottom: 1px solid var(--border);
+        padding: 0 40px;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    header h1 {
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: -0.4px;
+        background: linear-gradient(135deg, #c4b5fd 0%, #8b5cf6 50%, #60a5fa 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        -webkit-text-fill-color: transparent;
+    }
+
+    header span {
+        color: var(--muted);
+        font-size: 13px;
+    }
+
+    .badge {
+        background: rgba(139, 92, 246, 0.12);
+        color: #c4b5fd;
+        border: 1px solid rgba(139, 92, 246, 0.25);
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+    }
+
+    /* ─── LAYOUT ──────────────────────────────────────── */
+    .container {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 56px 28px 80px;
+    }
+
+    /* ─── CARDS ───────────────────────────────────────── */
+    .input-card,
+    .result-card {
+        background: var(--card);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        padding: 32px 36px;
+        box-shadow:
+            0 1px 0 rgba(255, 255, 255, 0.04) inset,
+            0 8px 32px rgba(0, 0, 0, 0.40),
+            0 2px 8px rgba(0, 0, 0, 0.25);
+        transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .input-card:hover,
+    .result-card:hover {
+        border-color: rgba(139, 92, 246, 0.20);
+        box-shadow:
+            0 1px 0 rgba(255, 255, 255, 0.05) inset,
+            0 12px 48px rgba(0, 0, 0, 0.50),
+            0 0 0 1px rgba(139, 92, 246, 0.10);
+    }
+
+    .input-card {
+        margin-bottom: 20px;
+    }
+
+    .result-card {
+        display: none;
+        margin-bottom: 16px;
+    }
+
+    .result-card.visible {
+        display: block;
+    }
+
+    /* ─── LABEL ───────────────────────────────────────── */
+    label {
+        display: block;
+        margin-bottom: 18px;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+    }
+
+    /* ─── SEARCH ROW ──────────────────────────────────── */
+    .input-row {
+        display: flex;
+        gap: 10px;
+        align-items: stretch;
+        margin-bottom: 24px;
+    }
+
+    input[type="text"] {
+        flex: 1;
+        background: rgba(8, 10, 22, 0.70);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        color: var(--text);
+        padding: 14px 18px;
+        border-radius: var(--radius-md);
+        font-size: 15px;
+        font-family: inherit;
+        transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+        min-height: 52px;
+    }
+
+    input[type="text"]::placeholder {
+        color: var(--faint);
+    }
+
+    input[type="text"]:focus {
+        outline: none;
+        border-color: rgba(139, 92, 246, 0.55);
+        background: rgba(10, 12, 28, 0.85);
+        box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.10);
+    }
+
+    /* ─── BUTTONS ─────────────────────────────────────── */
+    button {
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all var(--transition);
+        border-radius: var(--radius-md);
+        white-space: nowrap;
+    }
+
+    button:not(.secondary):not(.confirm):not(.clear) {
+        background: linear-gradient(145deg, #9b6ff8, #7c3aed);
+        color: white;
+        padding: 0 24px;
+        min-height: 52px;
+        box-shadow:
+            0 4px 16px rgba(124, 58, 237, 0.30),
+            0 1px 0 rgba(255, 255, 255, 0.12) inset;
+    }
+
+    button:not(.secondary):not(.confirm):not(.clear):hover {
+        background: linear-gradient(145deg, #a97af9, #8b4ff5);
+        box-shadow:
+            0 8px 24px rgba(124, 58, 237, 0.45),
+            0 1px 0 rgba(255, 255, 255, 0.15) inset;
+        transform: translateY(-1px);
+    }
+
+    button:not(.secondary):not(.confirm):not(.clear):active {
+        transform: translateY(0);
+    }
+
+    button.secondary {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        color: var(--muted);
+        padding: 12px 20px;
+    }
+
+    button.secondary:hover {
+        background: rgba(255, 255, 255, 0.07);
+        border-color: rgba(255, 255, 255, 0.14);
+        color: var(--text);
+    }
+
+    button.confirm {
+        background: linear-gradient(145deg, #12c990, #059669);
+        color: white;
+        padding: 12px 20px;
+        box-shadow: 0 4px 16px rgba(5, 150, 105, 0.28);
+    }
+
+    button.confirm:hover {
+        background: linear-gradient(145deg, #15e0a0, #06a87a);
+        box-shadow: 0 6px 20px rgba(5, 150, 105, 0.40);
+        transform: translateY(-1px);
+    }
+
+    /* ─── SUGGESTED CHIPS ─────────────────────────────── */
+    .suggested {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 8px;
+        row-gap: 16px;
+    }
+
+    .chip {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: var(--muted);
+        padding: 7px 14px;
+        border-radius: 999px;
+        font-size: 12.5px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all var(--transition);
+        user-select: none;
+    }
+
+    .chip:hover {
+        border-color: rgba(139, 92, 246, 0.40);
+        background: rgba(139, 92, 246, 0.10);
+        color: #ddd6fe;
+        transform: translateY(-1px);
+    }
+
+    /* ─── LOADING ─────────────────────────────────────── */
+    .loading {
+        display: none;
+        text-align: center;
+        color: var(--muted);
+        margin: 16px 0;
+        font-size: 13.5px;
+        letter-spacing: 0.01em;
+    }
+
+    .loading.visible {
+        display: block;
+    }
+
+    /* ─── SQL BLOCK ───────────────────────────────────── */
+    .sql-block {
+        background: rgba(2, 4, 18, 0.80);
+        border: 1px solid rgba(139, 92, 246, 0.14);
+        border-radius: var(--radius-md);
+        padding: 20px 24px;
+        font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+        font-size: 13px;
+        line-height: 1.7;
+        color: #86efac;
+        overflow-x: auto;
+        box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.40);
+        margin-bottom: 20px;
+    }
+
+    /* ─── CONFIDENCE ──────────────────────────────────── */
+    .confidence-bar {
+        flex: 1;
+        height: 6px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.07);
+        overflow: hidden;
+    }
+
+    .confidence-fill {
+        height: 100%;
+        border-radius: 999px;
+        transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ─── RESULTS TABLE ───────────────────────────────── */
+    .results-table {
+        width: 100%;
+        min-width: 600px;
+        border-collapse: collapse;
+        border-radius: var(--radius-md);
+    }
+
+    #resultsContainer {
+        overflow-x: auto;
+        width: 100%;
+        border-radius: var(--radius-md);
+    }
+
+    .results-table th {
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--muted);
+        padding: 12px 16px;
+        text-align: left;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.10em;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .results-table td {
+        padding: 13px 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.04);
+        font-size: 13.5px;
+        color: #cbd5e1;
+    }
+
+    .results-table tr:hover td {
+        background: rgba(255, 255, 255, 0.025);
+    }
+
+    /* ─── ERROR / WARNING ─────────────────────────────── */
+    .error-msg {
+        display: none;
+        background: rgba(239, 68, 68, 0.09);
+        border: 1px solid rgba(239, 68, 68, 0.25);
+        color: #fca5a5;
+        padding: 14px 18px;
+        border-radius: var(--radius-md);
+        font-size: 13.5px;
+        margin-bottom: 16px;
+    }
+
+    .error-msg.visible {
+        display: block;
+    }
+
+    .warning {
+        background: rgba(245, 158, 11, 0.09);
+        border: 1px solid rgba(245, 158, 11, 0.25);
+        color: #fcd34d;
+        padding: 11px 16px;
+        border-radius: var(--radius-sm);
+        margin-bottom: 18px;
+        font-size: 13px;
+        display: none;
+    }
+
+    .warning.visible {
+        display: block;
+    }
+
+    /* ─── STAT ROW ────────────────────────────────────── */
+    .stat-row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        color: var(--muted);
+        font-size: 12.5px;
+        margin-bottom: 16px;
+    }
+
+    /* ─── CARD HEADINGS ───────────────────────────────── */
+    .result-card h3 {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text);
+        letter-spacing: -0.2px;
+        margin-bottom: 20px;
+    }
+
+    /* ─── APPROVAL BUTTONS ────────────────────────────── */
+    .approval-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+
+    /* ─── HISTORY ITEMS ───────────────────────────────── */
+    .history-item {
+        padding: 16px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .history-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .history-item:first-child {
+        padding-top: 0;
+    }
+
+    .history-question {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text);
+        margin-bottom: 5px;
+    }
+
+    .history-meta {
+        color: var(--muted);
+        font-size: 12px;
+        letter-spacing: 0.01em;
+    }
+
+    /* ─── CONFIDENCE SECTION ──────────────────────────── */
+    .confidence {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 0;
+    }
+
+    #chartContainer {
+    margin-top: 20px;
+    display: none;
+    }
+
+    #chartContainer.visible {
+        display: block;
+    }
+
+    canvas#resultChart {
+        max-height: 320px;
+    
+    }
+
+    /* ─── RESPONSIVE ─────────────────────────────────── */
+
+    /* Tablet (768px and below) */
+    @media (max-width: 768px) {
+        header {
+            padding: 0 20px;
+            gap: 10px;
+        }
+
+        .container {
+            padding: 32px 16px 60px;
+        }
+
+        .input-card,
+        .result-card {
+            padding: 24px 20px;
+        }
+
+        .results-table {
+            display: block;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+    }
+
+    /* Mobile (480px and below) */
+    @media (max-width: 480px) {
+        header h1 {
+            font-size: 16px;
+        }
+
+        header span {
+            display: none;
+        }
+
+        .container {
+            padding: 20px 12px 48px;
+        }
+
+        .input-card,
+        .result-card {
+            padding: 20px 16px;
+            border-radius: 18px;
+        }
+
+        .input-row {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .input-row button {
+            width: 100%;
+            min-height: 48px;
+        }
+
+        input[type="text"] {
+            font-size: 16px; /* prevents iOS zoom on focus */
+        }
+
+        .chip {
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+
+        .sql-block {
+            font-size: 11.5px;
+            padding: 14px 16px;
+        }
+
+        .approval-buttons {
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .approval-buttons button {
+            width: 100%;
+        }
+
+        .results-table th,
+        .results-table td {
+            padding: 10px 12px;
+            font-size: 12.5px;
+        }
+    }
+
+    /* Large monitors (1400px and above) */
+    @media (min-width: 1400px) {
+        .container {
+            max-width: 860px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .suggested {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        
+        .chip {
+            text-align: center;
+            justify-content: center;
+            font-size: 11px;
+            padding: 8px 6px;
+        }
+    }
+
+    /* ─── CLEAR BUTTON ────────────────────────────────── */
+    button.clear {
+        background: linear-gradient(145deg, #f87171, #dc2626);
+        color: white;
+        padding: 0 24px;
+        min-height: 52px;
+        font-size: 14px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow:
+            0 4px 16px rgba(220, 38, 38, 0.30),
+            0 1px 0 rgba(255, 255, 255, 0.12) inset;
+    }
+
+    button.clear:hover {
+        background: linear-gradient(145deg, #ef4444, #b91c1c);
+        box-shadow:
+            0 8px 24px rgba(220, 38, 38, 0.45),
+            0 1px 0 rgba(255, 255, 255, 0.15) inset;
+        transform: translateY(-1px);
+    }
+
+    button.clear:active {
+        transform: translateY(0);
+    }
+
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>DataTalk</h1>
+        <span class="badge">Powered by Gemini + Fivetran</span>
+         <span style="margin-left: auto; display:flex; align-items:center; gap:16px;">
+        <button id="historyBtn" class="secondary" onclick="toggleHistory()" 
+            style="font-size:12px; padding:8px 16px;">
+            🕓 Show recent queries
+        </button>
+    </span>
+    </header>
+
+    <div id="fivetranBar" style="background:#0d1117; border-bottom:1px solid #2d3748; padding:8px 32px; display:flex; align-items:center; gap:20px; font-size:12px; color:#718096;">
+        <span>🔗 Fivetran connectors:</span>
+        <span id="connectorStatus">Loading...</span>
+       <button id="syncBtn" onclick="triggerSync()" style="margin-left:auto; background:transparent; border:1px solid #4a4a4a; color:#ffffff; padding:2px 8px; line-height:1; border-radius:4px; font-size:11px; cursor:pointer; transition: border-color 0.2s, color 0.2s;" onmouseover="this.style.borderColor='#f59e0b'; this.style.color='#f59e0b';" onmouseout="this.style.borderColor='#4a4a4a'; this.style.color='#ffffff';">
+            ⚡ Trigger sync
+        </button>
+        <span id="syncMessage" style="font-size:11px; color:#68d391; display:none;"></span>
+    </div>
+
+    <div class="container">
+        <!-- Input -->
+        <div class="input-card">
+            <label>Ask your data a question</label>
+            <div class="input-row">
+                <input type="text" id="questionInput"
+                    placeholder="e.g. How many orders were placed last month?"
+                    onkeydown="if(event.key==='Enter') handleAsk()">
+                    <button onclick="handleAsk()" id="askBtn">Ask</button>
+                    <button onclick="clearSearch()" id="clearBtn" class="clear" style="display:none;">
+                        ✕ Clear
+                    </button>
+            </div>
+            <div class="suggested">
+                <span class="chip" onclick="setQuestion('Which product category has the most orders?')">📦 Top category</span>
+                <span class="chip" onclick="setQuestion('What is the total revenue by product category?')">💰 Revenue by category</span>
+                <span class="chip" onclick="setQuestion('How many orders were placed each month in 2026?')">📅 Monthly orders</span>
+                <span class="chip" onclick="setQuestion('Which city has the highest total order value?')">🏙️ Top cities</span>
+                <span class="chip" onclick="setQuestion('What is the total amount spent per customer ordered by highest spender?')">👑 Top spenders</span>
+                <span class="chip" onclick="setQuestion('How many orders are completed vs pending vs cancelled?')">📊 Order status breakdown</span>
+                <span class="chip" onclick="setQuestion('What is the average order value by product category?')">🧮 Avg order value</span>
+                <span class="chip" onclick="setQuestion('What is the total revenue per month in 2026?')">📈 Monthly revenue</span>
+            </div>
+        </div>
+
+        <!-- Loading -->
+        <div class="loading" id="loading">
+            ⏳ Generating SQL candidates and ranking them...
+        </div>
+
+        <!-- Error -->
+        <div class="error-msg" id="errorMsg"></div>
+
+        <!-- SQL Approval Card -->
+        <div class="result-card" id="approvalCard">
+            <h3>Generated SQL — Review Before Executing</h3>
+            <div class="warning" id="confidenceWarning">
+                ⚠️ Low confidence — please review this SQL carefully before running
+            </div>
+            <div class="stat-row">
+                <span id="candidateCount"></span>
+                <span>·</span>
+                <span id="confidenceText"></span>
+            </div>
+            <div class="sql-block" id="sqlDisplay"></div>
+            <div class="confidence">
+                <span style="font-size:12px; color:#718096">Confidence</span>
+                <div class="confidence-bar">
+                    <div class="confidence-fill" id="confidenceFill"></div>
+                </div>
+                <span style="font-size:12px; color:#a0aec0" id="confidenceScore"></span>
+            </div>
+            <div class="approval-buttons">
+                <button class="confirm" onclick="handleConfirm()">
+                    ✓ Run this query
+                </button>
+                <button class="secondary" onclick="handleRephrase()">
+                    ↺ Rephrase question
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Card -->
+        <div class="result-card" id="resultsCard">
+            <h3>Results</h3>
+            <div class="stat-row" id="resultStats"></div>
+            <div id="insightBox" style="display:none; background:#1e1b4b; border:1px solid #4c1d95; color:#c4b5fd; padding:12px 16px; border-radius:8px; font-size:14px; margin-bottom:16px; line-height:1.5;"></div>
+            <div id="chartContainer">
+                <canvas id="resultChart"></canvas>
+            </div>
+            <div id="resultsContainer"></div>
+            <!-- Report section -->
+            <div style="margin-top:16px;">
+                <button class="secondary" onclick="generateReport()" id="reportBtn" style="font-size:13px;">
+                    📋 Generate business report
+                </button>
+            </div>
+            <div id="reportBox" style="display:none; margin-top:16px; background:#0f1117; border:1px solid #2d3748; border-radius:8px; padding:20px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                    <h3 style="font-size:13px; font-weight:600; color:#a0aec0; text-transform:uppercase; letter-spacing:0.05em;">Business Report</h3>
+                    <button class="secondary" onclick="document.getElementById('reportBox').style.display='none'" style="font-size:11px; padding:4px 10px;">✕ Close</button>
+                </div>
+                <div id="reportContent" style="font-size:14px; color:#e2e8f0; line-height:1.8; white-space:pre-wrap;"></div>
+                <div style="margin-top:16px; display:flex; gap:10px;">
+                    <button class="secondary" onclick="copyReport()" style="font-size:12px;">📋 Copy report</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Card -->
+        <div class="result-card" id="historyCard">
+            <h3>Recent Queries</h3>
+            <div id="historyContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentController = null;
+        let historyVisible = false;
+        let currentSQL = "";
+        let currentQuestion = "";
+
+        let currentChart = null;
+
+        function detectAndRenderChart(results) {
+            const container = document.getElementById("chartContainer");
+            const canvas = document.getElementById("resultChart");
+
+            // Destroy previous chart if exists
+            if (currentChart) {
+                currentChart.destroy();
+                currentChart = null;
+            }
+
+            // Need exactly 2 columns and at least 2 rows for a chart
+            if (!results || results.length < 2) {
+                container.classList.remove("visible");
+                return;
+            }
+
+            const cols = Object.keys(results[0]);
+            if (cols.length !== 2) {
+                container.classList.remove("visible");
+                return;
+            }
+
+            const col1 = cols[0];
+            const col2 = cols[1];
+            const val1 = results[0][col1];
+            const val2 = results[0][col2];
+
+            // Determine which column is the label and which is the value
+            let labelCol, valueCol;
+            if (typeof val2 === "number") {
+                labelCol = col1;
+                valueCol = col2;
+            } else if (typeof val1 === "number") {
+                labelCol = col2;
+                valueCol = col1;
+            } else {
+                container.classList.remove("visible");
+                return;
+            }
+
+            const labels = results.map(r => String(r[labelCol]));
+            const values = results.map(r => Number(r[valueCol]));
+
+            // Detect chart type: if labels look like dates, use line chart
+            const looksLikeDate = labels[0] && (
+                labels[0].match(/^\d{4}-\d{2}/) ||
+                labels[0].match(/^\d{4}$/)
+            );
+            const chartType = looksLikeDate ? "line" : "bar";
+
+            const colors = chartType === "line"
+                ? { bg: "rgba(124, 58, 237, 0.15)", border: "#7c3aed" }
+                : { bg: "rgba(124, 58, 237, 0.7)", border: "#6d28d9" };
+
+            currentChart = new Chart(canvas, {
+                type: chartType,
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: valueCol,
+                        data: values,
+                        backgroundColor: colors.bg,
+                        borderColor: colors.border,
+                        borderWidth: 2,
+                        borderRadius: chartType === "bar" ? 6 : 0,
+                        tension: 0.4,
+                        fill: chartType === "line",
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: { color: "#a0aec0", font: { size: 12 } }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: "#718096", maxRotation: 45 },
+                            grid: { color: "#1a1d2e" }
+                        },
+                        y: {
+                            ticks: { color: "#718096" },
+                            grid: { color: "#2d3748" },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            container.classList.add("visible");
+        }
+
+        function setQuestion(q) {
+            document.getElementById("questionInput").value = q;
+            document.getElementById("questionInput").focus();
+        }
+
+        function showError(msg) {
+            const el = document.getElementById("errorMsg");
+            el.textContent = msg;
+            el.classList.add("visible");
+        }
+
+        function hideError() {
+            document.getElementById("errorMsg").classList.remove("visible");
+        }
+
+        async function handleAsk() {
+            const question = document.getElementById("questionInput").value.trim();
+            if (!question) return;
+            document.getElementById("clearBtn").style.display = "inline-flex";
+
+
+            currentQuestion = question;
+            hideError();
+
+            document.getElementById("historyCard").classList.remove("visible");
+            document.getElementById("historyBtn").textContent = "🕓 Show recent queries";
+            historyVisible = false;
+
+            // Hide previous results
+            document.getElementById("approvalCard").classList.remove("visible");
+            document.getElementById("resultsCard").classList.remove("visible");
+
+            document.getElementById("reportBox").style.display = "none";
+            document.getElementById("insightBox").style.display = "none";
+
+            if (currentController) currentController.abort();
+            currentController = new AbortController();
+
+            // Show loading
+            const loading = document.getElementById("loading");
+            loading.classList.add("visible");
+            document.getElementById("askBtn").disabled = true;
+
+            try {
+                const resp = await fetch("/api/generate-sql", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ question }),
+                    signal: currentController.signal
+                });
+
+                const data = await resp.json();
+                loading.classList.remove("visible");
+                document.getElementById("askBtn").disabled = false;
+
+                if (data.error) {
+                    showError("Error: " + data.error);
+                    return;
+                }
+
+                // Store SQL for confirmation step
+                currentSQL = data.best_sql;
+
+                // Populate approval card
+                document.getElementById("sqlDisplay").textContent = data.best_sql;
+                document.getElementById("candidateCount").textContent =
+                    `${data.all_candidates} candidates generated`;
+                document.getElementById("confidenceText").textContent =
+                    `Score: ${data.confidence_score}/6`;
+                document.getElementById("confidenceScore").textContent =
+                    `${data.confidence_score}/6`;
+
+                const pct = (data.confidence_score / 6) * 100;
+                const fill = document.getElementById("confidenceFill");
+                fill.style.width = pct + "%";
+                fill.style.background = pct >= 80 ? "#059669" :
+                                        pct >= 50 ? "#d97706" : "#dc2626";
+
+                const warning = document.getElementById("confidenceWarning");
+                if (data.confidence_score < 4) {
+                    warning.classList.add("visible");
+                } else {
+                    warning.classList.remove("visible");
+                }
+
+                document.getElementById("approvalCard").classList.add("visible");
+
+            } catch (e) {
+                if (e.name === "AbortError") return; // user cancelled, do nothing
+                loading.classList.remove("visible");
+                document.getElementById("askBtn").disabled = false;
+                showError("Network error — is the server running?");
+            }
+        }
+
+        async function handleConfirm() {
+            if (!currentSQL) return;
+
+            document.getElementById("approvalCard").classList.remove("visible");
+            const loading = document.getElementById("loading");
+            loading.textContent = "⚙️ Executing query against BigQuery...";
+            loading.classList.add("visible");
+
+            try {
+                const resp = await fetch("/api/execute-sql", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        sql: currentSQL,
+                        question: currentQuestion
+                    })
+                });
+
+                const data = await resp.json();
+                window.lastResults = data.results || [];
+                loading.classList.remove("visible");
+                loading.textContent = "⏳ Generating SQL candidates and ranking them...";
+
+                if (data.error) {
+                    showError("Execution error: " + data.error);
+                    return;
+                }
+
+                // Show results
+                document.getElementById("resultStats").textContent =
+                `${data.row_count} rows returned`;
+
+                // Show insight if available
+                const insightEl = document.getElementById("insightBox");
+                if (data.insight && data.insight.length > 0) {
+                    insightEl.textContent = "💡 " + data.insight;
+                    insightEl.style.display = "block";
+                } else {
+                    insightEl.style.display = "none";
+                }
+
+                const container = document.getElementById("resultsContainer");
+
+                if (data.results.length === 0) {
+                    container.innerHTML = '<p style="color:#718096">No results found.</p>';
+                } else {
+                    const cols = Object.keys(data.results[0]);
+                    let html = '<table class="results-table"><thead><tr>';
+                    cols.forEach(c => { html += `<th>${c}</th>`; });
+                    html += '</tr></thead><tbody>';
+                    data.results.forEach(row => {
+                        html += '<tr>';
+                        cols.forEach(c => { html += `<td>${row[c] ?? ''}</td>`; });
+                        html += '</tr>';
+                    });
+                    html += '</tbody></table>';
+                    container.innerHTML = html;
+                }
+
+                detectAndRenderChart(data.results);
+                document.getElementById("resultsCard").classList.add("visible");
+
+                
+            } catch (e) {
+                loading.classList.remove("visible");
+                showError("Network error during execution.");
+            }
+        }
+
+        function clearSearch() {
+            if (currentController) {
+                currentController.abort();
+                currentController = null;
+            }
+            document.getElementById("askBtn").disabled = false;
+            document.getElementById("loading").classList.remove("visible");
+
+            // Clear input
+            document.getElementById("questionInput").value = "";
+
+            // Hide all result cards
+            document.getElementById("approvalCard").classList.remove("visible");
+            document.getElementById("resultsCard").classList.remove("visible");
+            document.getElementById("historyCard").classList.remove("visible");
+            document.getElementById("errorMsg").classList.remove("visible");
+            document.getElementById("loading").classList.remove("visible");
+
+            // Reset history button
+            document.getElementById("historyBtn").textContent = "🕓 Show recent queries";
+            historyVisible = false;
+
+            // Destroy chart if any
+            if (currentChart) { currentChart.destroy(); currentChart = null; }
+            document.getElementById("chartContainer").classList.remove("visible");
+
+            // Focus input
+            document.getElementById("questionInput").focus();
+            document.getElementById("clearBtn").style.display = "none";
+        }
+
+        function handleRephrase() {
+            document.getElementById("approvalCard").classList.remove("visible");
+            document.getElementById("chartContainer").classList.remove("visible");
+            if (currentChart) { currentChart.destroy(); currentChart = null; }
+            document.getElementById("questionInput").focus();
+            document.getElementById("questionInput").select();
+        }
+
+        
+
+        async function toggleHistory() {
+            const historyCard = document.getElementById("historyCard");
+            const historyBtn = document.getElementById("historyBtn");
+
+            if (historyVisible) {
+                // Hide history, restore normal view
+                historyCard.classList.remove("visible");
+                historyBtn.textContent = "🕓 Show recent queries";
+                historyVisible = false;
+                return;
+            }
+
+            // Hide all other result cards
+            document.getElementById("approvalCard").classList.remove("visible");
+            document.getElementById("resultsCard").classList.remove("visible");
+            document.getElementById("errorMsg").classList.remove("visible");
+            document.getElementById("loading").classList.remove("visible");
+
+            // Show history card
+            historyCard.classList.add("visible");
+            historyBtn.textContent = "✕ Hide history";
+            historyVisible = true;
+
+            const container = document.getElementById("historyContainer");
+            container.innerHTML = '<p style="color:#718096; font-size:13px;">Loading history...</p>';
+
+            // Scroll to history card
+            historyCard.scrollIntoView({ behavior: "smooth", block: "start" });
+
+            try {
+                const resp = await fetch("/api/history");
+                const data = await resp.json();
+
+                if (data.history && data.history.length > 0) {
+                    container.innerHTML = data.history.map(h => `
+                        <div class="history-item">
+                            <div class="history-question">${h.question}</div>
+                            <div class="history-meta">${h.result_summary} · ${h.timestamp?.slice(0,16).replace('T',' ')} UTC</div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<p style="color:#718096; font-size:13px;">No queries saved yet. Ask a question first.</p>';
+                }
+            } catch(e) {
+                container.innerHTML = '<p style="color:#fc8181; font-size:13px;">Error loading history: ' + e.message + '</p>';
+            }
+        }
+
+        async function loadConnectorStatus() {
+            try {
+                const resp = await fetch("/api/fivetran-status");
+                const data = await resp.json();
+                if (data.connectors && data.connectors.length > 0) {
+                    const statusEl = document.getElementById("connectorStatus");
+                    statusEl.innerHTML = data.connectors
+                        .filter(c => c.name !== "fivetran_metadata_apparition_geranium")
+                        .map(c => `<span style="color:${c.status === 'scheduled' ? '#68d391' : '#fc8181'}">
+                            ● ${c.name} (${c.status})</span>`)
+                        .join(" &nbsp;|&nbsp; ");
+                }
+            } catch(e) {}
+        }
+
+        loadConnectorStatus();
+
+        async function generateReport() {
+        const reportBtn = document.getElementById("reportBtn");
+        const reportBox = document.getElementById("reportBox");
+        const reportContent = document.getElementById("reportContent");
+
+        if (!currentSQL || !currentQuestion) {
+            showError("Please run a query first before generating a report.");
+            return;
+        }
+
+        // Get current results from the table
+        const resultsContainer = document.getElementById("resultsContainer");
+
+        reportBtn.disabled = true;
+        reportBtn.textContent = "⏳ Generating report...";
+        reportBox.style.display = "none";
+
+        try {
+            const resp = await fetch("/api/generate-report", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    question: currentQuestion,
+                    sql: currentSQL,
+                    results: window.lastResults || []
+                })
+            });
+
+            const data = await resp.json();
+
+            if (data.error) {
+                showError("Report error: " + data.error);
+            } else {
+                reportContent.textContent = data.report;
+                reportBox.style.display = "block";
+                reportBox.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        } catch(e) {
+            showError("Network error generating report.");
+        } finally {
+            reportBtn.disabled = false;
+            reportBtn.textContent = "📋 Generate business report";
+        }
+    }
+
+    function copyReport() {
+        const text = document.getElementById("reportContent").textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = event.target;
+            btn.textContent = "✅ Copied!";
+            setTimeout(() => { btn.textContent = "📋 Copy report"; }, 2000);
+        });
+    }
+
+    async function triggerSync() {
+        const syncBtn = document.getElementById("syncBtn");
+        const syncMessage = document.getElementById("syncMessage");
+
+        syncBtn.disabled = true;
+        syncBtn.textContent = "⏳ Triggering...";
+        syncMessage.style.display = "none";
+
+        try {
+            const resp = await fetch("/api/trigger-sync", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            });
+            const data = await resp.json();
+
+            if (data.error) {
+                syncMessage.style.color = "#fc8181";
+                syncMessage.textContent = "❌ " + data.error;
+            } else {
+                syncMessage.style.color = "#68d391";
+                syncMessage.textContent = "✅ " + data.message;
+                // Start polling for sync completion
+                pollSyncStatus();
+            }
+            syncMessage.style.display = "inline";
+
+        } catch(e) {
+            syncMessage.style.color = "#fc8181";
+            syncMessage.textContent = "❌ Network error";
+            syncMessage.style.display = "inline";
+        } finally {
+            syncBtn.disabled = false;
+            syncBtn.textContent = "⚡ Trigger sync";
+        }
+    }
+
+    async function pollSyncStatus() {
+        const syncMessage = document.getElementById("syncMessage");
+        const connectorStatus = document.getElementById("connectorStatus");
+
+        // Poll every 3 seconds for up to 60 seconds
+        let attempts = 0;
+        const maxAttempts = 20;
+
+        const poll = setInterval(async () => {
+            attempts++;
+
+            try {
+                const resp = await fetch("/api/sync-status");
+                const data = await resp.json();
+
+                if (data.statuses) {
+                    // Update the status bar
+                    connectorStatus.innerHTML = data.statuses
+                        .map(s => {
+                            const isSyncing = s.sync_state === "syncing";
+                            const isScheduled = s.sync_state === "scheduled";
+                            const color = isScheduled ? "#68d391" :
+                                        isSyncing ? "#fcd34d" : "#fc8181";
+                            const icon = isSyncing ? "🔄" : "●";
+                            return `<span style="color:${color}">${icon} ${s.schema} (${s.sync_state})</span>`;
+                        })
+                        .join(" &nbsp;|&nbsp; ");
+
+                    // Check if all syncs completed
+                    const allDone = data.statuses.every(
+                        s => s.sync_state === "scheduled"
+                    );
+
+                    if (allDone) {
+                        clearInterval(poll);
+                        syncMessage.textContent = "✅ Sync completed";
+                        setTimeout(() => {
+                            syncMessage.style.display = "none";
+                        }, 3000);
+                    }
+                }
+            } catch(e) {
+                // Fail silently during polling
+            }
+
+            if (attempts >= maxAttempts) {
+                clearInterval(poll);
+                syncMessage.textContent = "⏱ Sync in progress — check back soon";
+            }
+        }, 3000);
+    }
+       
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</body>
+</html>

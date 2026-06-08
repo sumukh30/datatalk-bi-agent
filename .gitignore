@@ -1,0 +1,32 @@
+# Environment
+.env
+*.env
+
+# Credentials
+service-account.json
+*.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Mac
+.DS_Store
+
+# Deployment copies (don't commit these duplicates)
+frontend/datatalk/
+frontend/schema_tool.py
+frontend/firestore_store.py
+frontend/__pycache__/
+
+# ADK
+.adk/
+Fivetran.txt
