@@ -392,7 +392,7 @@ http://127.0.0.1:8080
 ```bash
 cd frontend
 
-gcloud run deploy datatalk-frontend \
+gcloud run deploy datatalk-agent \
   --source . \
   --region us-central1 \
   --allow-unauthenticated \
