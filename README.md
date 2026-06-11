@@ -14,8 +14,8 @@ https://datatalk-agent-1070395408347.us-central1.run.app/
 
 ## 🎥 Demo Video
 
-**Watch the 3-minute walkthrough:**
-_Replace with your video URL_
+**Watch the walkthrough:**
+https://www.youtube.com/watch?v=huCqE7UFTEs
 
 ---
 
