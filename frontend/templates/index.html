@@ -20,14 +20,14 @@
         --card: rgba(16, 18, 35, 0.80);
         --card-hover: rgba(20, 22, 42, 0.90);
         --border: rgba(255, 255, 255, 0.07);
-        --border-hover: rgba(139, 92, 246, 0.30);
+        --border-hover: rgba(6, 182, 212, 0.30);
         --text: #e2e8f0;
         --muted: #7c8db5;
         --faint: #3d4a66;
-        --primary: #8b5cf6;
-        --primary-hover: #7c3aed;
-        --primary-glow: rgba(139, 92, 246, 0.18);
-        --secondary: #60a5fa;
+        --primary: #06b6d4;
+        --primary-hover: #0891b2;
+        --primary-glow: rgba(6, 182, 212, 0.18);
+        --secondary: #67e8f9;
         --success: #10b981;
         --danger: #ef4444;
         --radius-sm: 10px;
@@ -44,8 +44,8 @@
         font-size: 15px;
         line-height: 1.6;
         background:
-            radial-gradient(ellipse 80% 50% at 10% -10%, rgba(124, 58, 237, 0.18), transparent),
-            radial-gradient(ellipse 60% 40% at 90% 5%, rgba(59, 130, 246, 0.12), transparent),
+            radial-gradient(ellipse 80% 50% at 10% -10%, rgba(6, 182, 212, 0.18), transparent),
+            radial-gradient(ellipse 60% 40% at 90% 5%, rgba(8, 145, 178, 0.12), transparent),
             linear-gradient(160deg, #07080f 0%, #0d0f1c 50%, #0a0c18 100%);
         background-attachment: fixed;
     }
@@ -70,7 +70,7 @@
         font-size: 20px;
         font-weight: 700;
         letter-spacing: -0.4px;
-        background: linear-gradient(135deg, #c4b5fd 0%, #8b5cf6 50%, #60a5fa 100%);
+        background: linear-gradient(135deg, #a5f3fc 0%, #06b6d4 50%, #67e8f9 100%);
         background-clip: text;
         -webkit-background-clip: text;
         color: transparent;
@@ -83,9 +83,9 @@
     }
 
     .badge {
-        background: rgba(139, 92, 246, 0.12);
-        color: #c4b5fd;
-        border: 1px solid rgba(139, 92, 246, 0.25);
+        background: rgba(6, 182, 212, 0.12);
+        color: #a5f3fc;
+        border: 1px solid rgba(6, 182, 212, 0.25);
         padding: 4px 10px;
         border-radius: 999px;
         font-size: 11px;
@@ -118,11 +118,11 @@
 
     .input-card:hover,
     .result-card:hover {
-        border-color: rgba(139, 92, 246, 0.20);
+        border-color: rgba(6, 182, 212, 0.20);
         box-shadow:
             0 1px 0 rgba(255, 255, 255, 0.05) inset,
             0 12px 48px rgba(0, 0, 0, 0.50),
-            0 0 0 1px rgba(139, 92, 246, 0.10);
+            0 0 0 1px rgba(6, 182, 212, 0.10);
     }
 
     .input-card {
@@ -176,9 +176,9 @@
 
     input[type="text"]:focus {
         outline: none;
-        border-color: rgba(139, 92, 246, 0.55);
+        border-color: rgba(6, 182, 212, 0.55);
         background: rgba(10, 12, 28, 0.85);
-        box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.10);
+        box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.10);
     }
 
     /* ─── BUTTONS ─────────────────────────────────────── */
@@ -194,19 +194,19 @@
     }
 
     button:not(.secondary):not(.confirm):not(.clear) {
-        background: linear-gradient(145deg, #9b6ff8, #7c3aed);
+        background: linear-gradient(145deg, #22d3ee, #0891b2);
         color: white;
         padding: 0 24px;
         min-height: 52px;
         box-shadow:
-            0 4px 16px rgba(124, 58, 237, 0.30),
+            0 4px 16px rgba(6, 182, 212, 0.30),
             0 1px 0 rgba(255, 255, 255, 0.12) inset;
     }
 
     button:not(.secondary):not(.confirm):not(.clear):hover {
-        background: linear-gradient(145deg, #a97af9, #8b4ff5);
+        background: linear-gradient(145deg, #38bdf8, #0e7490);
         box-shadow:
-            0 8px 24px rgba(124, 58, 237, 0.45),
+            0 8px 24px rgba(6, 182, 212, 0.45),
             0 1px 0 rgba(255, 255, 255, 0.15) inset;
         transform: translateY(-1px);
     }
@@ -263,9 +263,9 @@
     }
 
     .chip:hover {
-        border-color: rgba(139, 92, 246, 0.40);
-        background: rgba(139, 92, 246, 0.10);
-        color: #ddd6fe;
+        border-color: rgba(6, 182, 212, 0.40);
+        background: rgba(6, 182, 212, 0.10);
+        color: #a5f3fc;
         transform: translateY(-1px);
     }
 
@@ -286,7 +286,7 @@
     /* ─── SQL BLOCK ───────────────────────────────────── */
     .sql-block {
         background: rgba(2, 4, 18, 0.80);
-        border: 1px solid rgba(139, 92, 246, 0.14);
+        border: 1px solid rgba(6, 182, 212, 0.14);
         border-radius: var(--radius-md);
         padding: 20px 24px;
         font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
@@ -627,7 +627,7 @@
                     onkeydown="if(event.key==='Enter') handleAsk()">
                     <button onclick="handleAsk()" id="askBtn">Ask</button>
                     <button onclick="clearSearch()" id="clearBtn" class="clear" style="display:none;">
-                        ✕ Clear
+                        ✕ Cancel
                     </button>
             </div>
             <div class="suggested">
@@ -635,7 +635,7 @@
                 <span class="chip" onclick="setQuestion('What is the total revenue by product category?')">💰 Revenue by category</span>
                 <span class="chip" onclick="setQuestion('How many orders were placed each month in 2026?')">📅 Monthly orders</span>
                 <span class="chip" onclick="setQuestion('Which city has the highest total order value?')">🏙️ Top cities</span>
-                <span class="chip" onclick="setQuestion('What is the total amount spent per customer ordered by highest spender?')">👑 Top spenders</span>
+                <span class="chip" onclick="setQuestion('What is the total amount spent per customer ordered by highest spender?(Top 10)')">👑 Top spenders</span>
                 <span class="chip" onclick="setQuestion('How many orders are completed vs pending vs cancelled?')">📊 Order status breakdown</span>
                 <span class="chip" onclick="setQuestion('What is the average order value by product category?')">🧮 Avg order value</span>
                 <span class="chip" onclick="setQuestion('What is the total revenue per month in 2026?')">📈 Monthly revenue</span>
@@ -683,7 +683,7 @@
         <div class="result-card" id="resultsCard">
             <h3>Results</h3>
             <div class="stat-row" id="resultStats"></div>
-            <div id="insightBox" style="display:none; background:#1e1b4b; border:1px solid #4c1d95; color:#c4b5fd; padding:12px 16px; border-radius:8px; font-size:14px; margin-bottom:16px; line-height:1.5;"></div>
+            <div id="insightBox" style="display:none; background:#083344; border:1px solid #164e63; color:#a5f3fc; padding:12px 16px; border-radius:8px; font-size:14px; margin-bottom:16px; line-height:1.5;"></div>
             <div id="chartContainer">
                 <canvas id="resultChart"></canvas>
             </div>
@@ -772,8 +772,8 @@
             const chartType = looksLikeDate ? "line" : "bar";
 
             const colors = chartType === "line"
-                ? { bg: "rgba(124, 58, 237, 0.15)", border: "#7c3aed" }
-                : { bg: "rgba(124, 58, 237, 0.7)", border: "#6d28d9" };
+                ? { bg: "rgba(6, 182, 212, 0.15)", border: "#06b6d4" }
+                : { bg: "rgba(6, 182, 212, 0.7)", border: "#0891b2" };
 
             currentChart = new Chart(canvas, {
                 type: chartType,
